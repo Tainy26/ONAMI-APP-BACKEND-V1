@@ -14,7 +14,6 @@ exports.regenerateJoinCode = async (req, res) => {
       return res.status(400).json({ ok: false, error: "Invalid team id" });
     }
 
-    // Intentar varias veces por si colisiona (muy raro)
     for (let attempt = 0; attempt < 10; attempt++) {
       const newCode = generateJoinCode();
 
@@ -33,7 +32,7 @@ exports.regenerateJoinCode = async (req, res) => {
 
         return res.json({ ok: true, team: result.rows[0] });
       } catch (err) {
-        if (err.code === "23505") continue; // unique_violation
+        if (err.code === "23505") continue;
         throw err;
       }
     }
@@ -78,7 +77,6 @@ exports.createTeam = async (req, res) => {
   }
 };
 
-// GET /teams (trainer) -> lista solo equipos del trainer logueado
 exports.getMyTeams = async (req, res) => {
   try {
     const result = await pool.query(
@@ -125,7 +123,6 @@ exports.updateTeam = async (req, res) => {
       return res.status(400).json({ ok: false, error: "Nothing to update" });
     }
 
-    // Solo puede editar si es suyo
     const result = await pool.query(
       `UPDATE teams
        SET
@@ -200,8 +197,6 @@ exports.kickAthleteFromTeam = async (req, res) => {
       return res.status(400).json({ ok: false, error: "Invalid id" });
     }
 
-    // Seguridad extra (aunque ya usas requireTrainerOwnsTeam):
-    // asegurar que el team es del trainer
     const teamCheck = await pool.query(
       `SELECT id FROM teams WHERE id = $1 AND trainer_id = $2`,
       [teamId, req.user.id]
@@ -210,7 +205,6 @@ exports.kickAthleteFromTeam = async (req, res) => {
       return res.status(404).json({ ok: false, error: "Team not found" });
     }
 
-    // Expulsar: set team_id = NULL solo si el atleta está en ese team
     const result = await pool.query(
       `UPDATE users
        SET team_id = NULL
@@ -237,7 +231,6 @@ exports.deleteAthlete = async (req, res) => {
       return res.status(400).json({ ok: false, error: "Invalid athlete id" });
     }
 
-    // Verificar ownership: athlete -> team -> trainer
     const check = await pool.query(
       `SELECT u.id
        FROM users u
@@ -252,7 +245,6 @@ exports.deleteAthlete = async (req, res) => {
       return res.status(403).json({ ok: false, error: "Forbidden" });
     }
 
-    // Borrar atleta (todo lo dependiente cae por CASCADE)
     const del = await pool.query(
       `DELETE FROM users
        WHERE id = $1 AND role = 'athlete'
@@ -282,7 +274,6 @@ exports.joinTeamByCode = async (req, res) => {
       return res.status(400).json({ ok: false, error: "Missing field: join_code" });
     }
 
-    // Si ya está en un equipo, no permitir (V1)
     const current = await pool.query(
       `SELECT team_id FROM users WHERE id = $1`,
       [req.user.id]
@@ -294,7 +285,6 @@ exports.joinTeamByCode = async (req, res) => {
       return res.status(400).json({ ok: false, error: "You are already in a team" });
     }
 
-    // Buscar team por código
     const teamRes = await pool.query(
       `SELECT id, name, trainer_id, join_code FROM teams WHERE join_code = $1`,
       [join_code]
@@ -305,7 +295,6 @@ exports.joinTeamByCode = async (req, res) => {
 
     const team = teamRes.rows[0];
 
-    // Asignar team_id al atleta
     const upd = await pool.query(
       `UPDATE users
        SET team_id = $1
@@ -351,6 +340,28 @@ exports.leaveTeam = async (req, res) => {
     return res.json({ ok: true, athlete: result.rows[0] });
   } catch (err) {
     console.error("leaveTeam error:", err);
+    return res.status(500).json({ ok: false, error: "Server error" });
+  }
+};
+
+/* NUEVO — Atleta ve su propio equipo */
+exports.getMyTeamAsAthlete = async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT t.id, t.name, t.join_code
+       FROM teams t
+       JOIN users u ON u.team_id = t.id
+       WHERE u.id = $1`,
+      [req.user.id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.json({ ok: true, team: null });
+    }
+
+    return res.json({ ok: true, team: result.rows[0] });
+  } catch (err) {
+    console.error("getMyTeamAsAthlete error:", err);
     return res.status(500).json({ ok: false, error: "Server error" });
   }
 };
