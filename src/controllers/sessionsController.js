@@ -32,9 +32,7 @@ exports.listTeamSessions = async (req, res) => {
       return res.status(400).json({ ok: false, error: "Invalid team id" });
     }
 
-    // acceso:
-    // - trainer: team debe ser suyo
-    // - athlete: debe pertenecer a ese team
+    // Acceso: Trainer: team debe ser suyo - Athlete: debe pertenecer a ese team
     if (req.user.role === "trainer") {
       const ok = await pool.query(
         `SELECT 1 FROM teams WHERE id = $1 AND trainer_id = $2`,
@@ -181,7 +179,6 @@ exports.getSessionDetail = async (req, res) => {
       return res.status(400).json({ ok: false, error: "Invalid session id" });
     }
 
-    // 1) Traer sesión + validar acceso por rol
     const s = await pool.query(
       `SELECT s.id, s.team_id, s.created_by, s.date, s.type, s.duration, s.notes, s.created_at,
               t.trainer_id
@@ -209,7 +206,6 @@ exports.getSessionDetail = async (req, res) => {
       return res.status(403).json({ ok: false, error: "Forbidden" });
     }
 
-    // 2) Traer ejercicios
     const ex = await pool.query(
       `SELECT id, session_id, name, description, sets, reps, duration_minutes, intensity, "order", created_at
        FROM session_exercises
@@ -218,7 +214,6 @@ exports.getSessionDetail = async (req, res) => {
       [sessionId]
     );
 
-    // 3) Respuesta (sin trainer_id)
     const session = {
       id: row.id,
       team_id: row.team_id,

@@ -1,8 +1,6 @@
 const pool = require("../db/pool");
 
-// helper: comprobar acceso a una sesión (trainer dueño del team o athlete del team)
 async function canAccessSession(sessionId, user) {
-  // Devuelve: { ok: true, team_id, trainer_id } o { ok:false }
   const r = await pool.query(
     `SELECT s.id, s.team_id, t.trainer_id
      FROM sessions s
@@ -28,7 +26,6 @@ async function canAccessSession(sessionId, user) {
   return { ok: false };
 }
 
-// GET /sessions/:sessionId/exercises  (trainer o athlete autorizado)
 exports.listSessionExercises = async (req, res) => {
   try {
     const sessionId = Number(req.params.sessionId);
@@ -56,7 +53,6 @@ exports.listSessionExercises = async (req, res) => {
   }
 };
 
-// POST /sessions/:sessionId/exercises  (solo trainer dueño del team)
 exports.addSessionExercise = async (req, res) => {
   try {
     const sessionId = Number(req.params.sessionId);
@@ -98,7 +94,6 @@ exports.addSessionExercise = async (req, res) => {
   }
 };
 
-// PUT /sessions/:sessionId/exercises/:exerciseId  (solo trainer dueño)
 exports.updateSessionExercise = async (req, res) => {
   try {
     const sessionId = Number(req.params.sessionId);
@@ -151,7 +146,6 @@ exports.updateSessionExercise = async (req, res) => {
   }
 };
 
-// DELETE /sessions/:sessionId/exercises/:exerciseId  (solo trainer dueño)
 exports.deleteSessionExercise = async (req, res) => {
   try {
     const sessionId = Number(req.params.sessionId);

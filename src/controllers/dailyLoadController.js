@@ -180,7 +180,7 @@ exports.getMyDailyLoadStats = async (req, res) => {
       [req.user.id]
     );
 
-    // Tendencia simple: 7 días recientes vs 7 anteriores (fatigue)
+    // Tendencia simple: 7 días recientes vs 7 anteriores
     const trend = await pool.query(
       `WITH last7 AS (
          SELECT AVG(fatigue) AS avg_f
@@ -293,7 +293,7 @@ exports.getTeamDailyLoadStats = async (req, res) => {
       [teamId]
     );
 
-    // Resumen equipo (avg 7d de fatigue)
+    // Resumen equipo (avg 7d de fatiga)
     const teamAvg7 = await pool.query(
       `
       SELECT AVG(dl.fatigue)::numeric(10,2) AS team_avg_7d_fatigue

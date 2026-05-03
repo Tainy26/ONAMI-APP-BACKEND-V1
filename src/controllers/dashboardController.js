@@ -152,7 +152,7 @@ exports.getAthleteDashboard = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    // 1️⃣ Info del user + team
+    // Info del user + team
     const userRes = await pool.query(
       `SELECT u.id, u.name, u.team_id, t.name AS team_name, t.trainer_id
        FROM users u
@@ -167,7 +167,7 @@ exports.getAthleteDashboard = async (req, res) => {
 
     const user = userRes.rows[0];
 
-    // 2️⃣ Último daily_load
+    // Último daily_load
     const lastLoadRes = await pool.query(
       `SELECT date, fatigue, soreness, sleep_quality, stress, mood
        FROM daily_load
@@ -179,7 +179,7 @@ exports.getAthleteDashboard = async (req, res) => {
 
     const last_load = lastLoadRes.rows[0] ?? null;
 
-    // 3️⃣ Promedios 7d y 3d
+    // Promedios 7d y 3d
     const avgRes = await pool.query(
       `SELECT
          AVG(fatigue) FILTER (WHERE date >= CURRENT_DATE - INTERVAL '6 days')::numeric(10,2) AS avg_7d,
@@ -194,7 +194,6 @@ exports.getAthleteDashboard = async (req, res) => {
 
     const personal_alert = stats.high_days_last_3d >= 2;
 
-    // 4️⃣ Ha registrado hoy?
     const todayRes = await pool.query(
       `SELECT 1
        FROM daily_load
@@ -204,7 +203,7 @@ exports.getAthleteDashboard = async (req, res) => {
 
     const has_registered_today = todayRes.rows.length > 0;
 
-    // 5️⃣ Próxima sesión (si tiene team)
+    // Próxima sesión (si tiene team)
     let next_session = null;
     let last_session = null;
 

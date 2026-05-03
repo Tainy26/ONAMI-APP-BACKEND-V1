@@ -11,7 +11,6 @@ module.exports = async function authMiddleware(req, res, next) {
     const token = header.split(" ")[1];
     const payload = jwt.verify(token, process.env.JWT_SECRET);
 
-    // ✅ Traer usuario actual desde DB (evita team_id viejo)
     const r = await pool.query(
       `SELECT id, name, email, role, team_id
        FROM users
