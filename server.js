@@ -3,6 +3,10 @@ const app = require("./src/app");
 
 const PORT = Number(process.env.PORT) || 3000;
 
-app.listen(PORT, () => {
-  console.log(`ONAMI Backend running in http://localhost:${PORT}`)
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`ONAMI Backend running in http://localhost:${PORT}`)
+  });
+}
+
+module.exports = app;

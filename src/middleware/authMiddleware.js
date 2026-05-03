@@ -13,7 +13,7 @@ module.exports = async function authMiddleware(req, res, next) {
 
     // ✅ Traer usuario actual desde DB (evita team_id viejo)
     const r = await pool.query(
-      `SELECT id, role, team_id
+      `SELECT id, name, email, role, team_id
        FROM users
        WHERE id = $1`,
       [payload.id]
@@ -24,8 +24,10 @@ module.exports = async function authMiddleware(req, res, next) {
     }
 
     req.user = {
-      id: r.rows[0].id,
-      role: r.rows[0].role,
+      id:      r.rows[0].id,
+      name:    r.rows[0].name,
+      email:   r.rows[0].email,
+      role:    r.rows[0].role,
       team_id: r.rows[0].team_id,
     };
 
