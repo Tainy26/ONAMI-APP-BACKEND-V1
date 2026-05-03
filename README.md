@@ -1,23 +1,40 @@
-# ONAMI Backend
+# ONAMI — Backend
 
-API REST desarrollada con Node.js y Express para la aplicación ONAMI, una plataforma de gestión deportiva para entrenadores y atletas.
+> API REST para la plataforma de gestión deportiva ONAMI.
 
-## Tecnologías
+![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=flat&logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express-5-000000?style=flat&logo=express&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169E1?style=flat&logo=postgresql&logoColor=white)
+![Vercel](https://img.shields.io/badge/Desplegado_en-Vercel-000000?style=flat&logo=vercel&logoColor=white)
 
-- Node.js
-- Express 5
-- PostgreSQL (pg)
-- JSON Web Tokens (JWT)
-- bcrypt
-- dotenv
-- cors
+---
 
-## Requisitos previos
+## ✨ Características
 
-- Node.js 18 o superior
-- PostgreSQL instalado y en ejecución
+- 🔐 **Autenticación JWT** — Registro, login y verificación de sesión
+- 👥 **Gestión de roles** — Lógica diferenciada para entrenadores y atletas
+- 🏋️ **Módulos completos** — Equipos, atletas, sesiones y carga diaria
+- 📊 **Dashboard** — Datos agregados por rol para visualización
+- ☁️ **Serverless** — Desplegado como función en Vercel con BD en Neon
 
-## Instalación
+---
+
+## 🛠️ Tecnologías
+
+| Tecnología | Uso |
+|---|---|
+| Node.js | Entorno de ejecución |
+| Express 5 | Framework HTTP |
+| PostgreSQL | Base de datos relacional |
+| pg | Cliente PostgreSQL para Node.js |
+| JWT | Autenticación stateless |
+| bcrypt | Hash de contraseñas |
+| dotenv | Gestión de variables de entorno |
+| cors | Control de acceso entre dominios |
+
+---
+
+## 🚀 Instalación y uso
 
 ```bash
 # Clonar el repositorio
@@ -45,8 +62,6 @@ JWT_EXPIRES_IN=7d
 CORS_ORIGIN=http://localhost:5173
 ```
 
-## Uso
-
 ```bash
 # Iniciar el servidor
 npm start
@@ -54,35 +69,39 @@ npm start
 
 El servidor se iniciará en `http://localhost:3000`.
 
-## Endpoints
+---
+
+## 📡 Endpoints
 
 | Método | Ruta | Descripción | Protegida |
-|--------|------|-------------|-----------|
-| GET | `/` | Estado de la API | No |
-| POST | `/auth/register` | Registro de usuario | No |
-| POST | `/auth/login` | Inicio de sesión | No |
-| GET | `/auth/me` | Usuario autenticado | Sí |
-| GET | `/athletes` | Listar atletas | Sí |
-| GET | `/teams` | Listar equipos | Sí |
-| POST | `/teams` | Crear equipo | Sí |
-| GET | `/sessions` | Listar sesiones | Sí |
-| POST | `/sessions` | Crear sesión | Sí |
-| GET | `/daily-load` | Cargas diarias | Sí |
-| POST | `/daily-load` | Registrar carga diaria | Sí |
-| GET | `/dashboard` | Datos del dashboard | Sí |
-| GET | `/profile` | Perfil del usuario | Sí |
+|--------|------|-------------|:---------:|
+| GET | `/` | Estado de la API | ❌ |
+| POST | `/auth/register` | Registro de usuario | ❌ |
+| POST | `/auth/login` | Inicio de sesión | ❌ |
+| GET | `/auth/me` | Usuario autenticado | ✅ |
+| GET | `/athletes` | Listar atletas | ✅ |
+| GET | `/teams` | Listar equipos | ✅ |
+| POST | `/teams` | Crear equipo | ✅ |
+| GET | `/sessions` | Listar sesiones | ✅ |
+| POST | `/sessions` | Crear sesión | ✅ |
+| GET | `/daily-load` | Cargas diarias | ✅ |
+| POST | `/daily-load` | Registrar carga diaria | ✅ |
+| GET | `/dashboard` | Datos del dashboard | ✅ |
+| GET | `/profile` | Perfil del usuario | ✅ |
 
 Las rutas protegidas requieren el header `Authorization: Bearer <token>`.
 
-## Estructura del proyecto
+---
+
+## 📁 Estructura del proyecto
 
 ```
 BACKEND/
 ├── src/
-│   ├── app.js              # Configuración de Express
-│   ├── controllers/        # Lógica de cada módulo
+│   ├── app.js              # Configuración de Express y middlewares
+│   ├── controllers/        # Lógica de negocio de cada módulo
 │   ├── routes/             # Definición de rutas
-│   ├── middleware/         # Middlewares (auth, etc.)
+│   ├── middleware/         # Middlewares (autenticación, etc.)
 │   └── db/
 │       └── pool.js         # Conexión a PostgreSQL
 ├── server.js               # Punto de entrada
@@ -90,8 +109,10 @@ BACKEND/
 └── .env.example            # Plantilla de variables de entorno
 ```
 
-## Despliegue
+---
+
+## 🌐 Producción
 
 La API está desplegada en Vercel con base de datos PostgreSQL en Neon:
 
-**URL de producción**: `https://onami-app-backend-v1.vercel.app`
+🔗 **[https://onami-app-backend-v1.vercel.app](https://onami-app-backend-v1.vercel.app)**
