@@ -14,9 +14,14 @@ const dashboardRoutes = require("./routes/dashboardRoutes");
 
 const app = express();
 
-app.use(cors({
+const corsOptions = {
   origin: process.env.CORS_ORIGIN || "*",
-}));
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.options("*", cors(corsOptions));
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.get("/", (req, res) => {res.send("ONAMI API FUNCIONANDO");});
